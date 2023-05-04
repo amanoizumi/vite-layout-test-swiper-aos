@@ -6,15 +6,34 @@ import { glob } from 'glob';
 
 import liveReload from 'vite-plugin-live-reload';
 
+function moveOutputPlugin() {
+  return {
+    name: 'move-output',
+    enforce: 'post',
+    apply: 'build',
+    async generateBundle(options, bundle) {
+      for (const fileName in bundle) {
+        if (fileName.startsWith('pages/')) {
+          const newFileName = fileName.slice('pages/'.length);
+          bundle[fileName].fileName = newFileName;
+        }
+      }
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [liveReload(['./layout/**/*.ejs', './pages/**/*.ejs', './pages/**/*.html']), ViteEjsPlugin()],
+  plugins: [
+    liveReload(['./layout/**/*.ejs', './pages/**/*.ejs', './pages/**/*.html']),
+    ViteEjsPlugin(),
+    moveOutputPlugin(),
+  ],
   server: {
     // 啟動 server 時預設開啟的頁面
     open: 'pages/index.html',
   },
   build: {
     rollupOptions: {
-      // 打包 pages 資料夾內的檔案
       input: Object.fromEntries(
         glob
           .sync('pages/**/*.html')
@@ -24,5 +43,6 @@ export default defineConfig({
           ])
       ),
     },
+    outDir: 'dist',
   },
 });
