@@ -14,6 +14,7 @@ import Swiper, { Navigation, Pagination } from 'swiper';
 import 'swiper/swiper-bundle.css';
 
 Swiper.use([Navigation, Pagination]);
+
 const swiper = new Swiper('.mySwiper', {
   navigation: {
     nextEl: '.swiper-button-next',
@@ -21,5 +22,6 @@ const swiper = new Swiper('.mySwiper', {
   },
   pagination: {
     el: '.swiper-pagination',
+    clickable: true
   },
 });
